@@ -3,3 +3,6 @@ soundcloud
 spotify
 twitch
 youtube
+vimeo
+kick
+rumble

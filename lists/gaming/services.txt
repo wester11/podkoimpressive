@@ -1,2 +1,13 @@
+steam
+epic_games
+battle_net
+riot_games
+ea_games
+gog
+ubisoft
+minecraft
+xbox
+playstation
 metacritic
 roblox
+twitch

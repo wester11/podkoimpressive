@@ -1,0 +1,6 @@
+spotify
+soundcloud
+deezer
+tidal
+apple_music
+lastfm

@@ -5,3 +5,6 @@ signal
 telegram
 viber
 whatsapp
+zoom
+skype
+slack

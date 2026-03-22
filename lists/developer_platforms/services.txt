@@ -2,3 +2,6 @@ github
 gitlab
 huggingface
 stackoverflow
+docker_hub
+npm_registry
+cloudflare

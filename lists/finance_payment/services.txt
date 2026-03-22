@@ -1,0 +1,4 @@
+paypal
+stripe
+wise
+revolut

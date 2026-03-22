@@ -1,0 +1,7 @@
+slack
+zoom
+skype
+trello
+notion
+miro
+figma
