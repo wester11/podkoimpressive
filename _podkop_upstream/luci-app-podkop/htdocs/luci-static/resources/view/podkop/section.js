@@ -4,6 +4,7 @@
 "require ui";
 "require tools.widgets as widgets";
 "require view.podkop.main as main";
+"require view.podkop.subscribe as subscribeExt";
 
 function createSectionContent(section) {
   let o = section.option(
@@ -683,6 +684,11 @@ function createSectionContent(section) {
   );
   o.rmempty = false;
   o.depends("mixed_proxy_enabled", "1");
+
+  // Subscription extension: fetch proxy configs by subscribe URL.
+  if (subscribeExt && typeof subscribeExt.enhanceSectionWithSubscribe === "function") {
+    subscribeExt.enhanceSectionWithSubscribe(section);
+  }
 }
 
 const EntryPoint = {

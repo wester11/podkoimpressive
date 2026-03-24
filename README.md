@@ -1,17 +1,30 @@
 # RU Net Blacklist
 
-Списки доменов/подсетей и кастомный Podkop для OpenWrt.
+Я собираю и поддерживаю этот репозиторий как набор списков доменов/подсетей и свой форк Podkop для OpenWrt.
 
-## Что это
+## Что внутри
 
-Проект дает:
+- `services/` - отдельные сервисы (домен + подсети).
+- `lists/` - готовые групповые секции (несколько сервисов в одном списке).
+- `_podkop_upstream/` - исходники моего кастомного Podkop.
+- `selector/` - генератор ключа выбора списков.
+- `wiki/` - документация по проекту.
 
-- базу сервисов `services/`
-- готовые секции `lists/`
-- кастомный Podkop с community-списками:
-  - стандартные списки Podkop
-  - ваши секции из `lists/`
-- установку на роутер одной командой
+## Что добавлено в моем форке Podkop
+
+- Предустановленные community-секции из этого репозитория:
+  - `ai_all` - AI инструменты
+  - `gaming` - Игры
+  - `social_networks` - Социальные сети
+  - `messengers_calls` - Мессенджеры и звонки
+  - `video_audio_streaming` - Видео и стриминг
+  - `news_media` - Новости и медиа
+  - `developer_platforms` - Платформы для разработчиков
+  - `cloud_storage` - Облачные хранилища
+- Интеграция подписок (Subscribe URL) в интерфейсе Podkop:
+  - можно подгружать конфиги по подписке;
+  - работает для режимов `Connection URL`, `Selector`, `URLTest`;
+  - можно выбирать конфиги из подписки без ручного копирования каждой ссылки.
 
 ## Установка одной командой
 
@@ -19,45 +32,30 @@
 sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/install.sh)
 ```
 
-или напрямую:
+Прямой запуск установщика:
 
 ```sh
 sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/podkop-fork/install.sh)
 ```
 
-## Community-секции (наши)
+С ключом выбора списков:
 
-- `ai_all` — AI инструменты
-- `gaming` — Игры
-- `social_networks` — Социальные сети
-- `messengers_calls` — Мессенджеры и звонки
-- `video_audio_streaming` — Видео и стриминг
-- `news_media` — Новости и медиа
-- `developer_platforms` — Платформы для разработчиков
-- `cloud_storage` — Облачные хранилища
+```sh
+sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/podkop-fork/install.sh) --key "PK1_ВАШ_КЛЮЧ"
+```
 
-## Как выпускается наш Podkop
+## Как собирается релиз Podkop
 
-При push тега `podkop-v*` запускается GitHub Actions:
+Релиз запускается тегом формата `podkop-v*`.  
+Workflow: `.github/workflows/release-custom-podkop.yml`.
 
-- `.github/workflows/release-custom-podkop.yml`
+Сборка публикует пакеты в GitHub Releases:
 
-Он:
-
-1. Собирает `podkop` и `luci-app-podkop` (`ipk` и `apk`) из `_podkop_upstream/`
-2. Публикует артефакты в GitHub Release
-
-## Где что лежит
-
-- `_podkop_upstream/` — исходники кастомного Podkop
-- `podkop-fork/` — установщик и инструкция
-- `lists/` — агрегированные списки
-- `services/` — отдельные сервисы
-- `selector/` — генератор ключа выбора списков
-- `wiki/` — документация
+- `podkop`
+- `luci-app-podkop`
+- `luci-i18n-podkop-ru` (если есть в сборке)
 
 ## Благодарность
 
-Спасибо автору Podkop:
-
-- https://github.com/itdoginfo/podkop
+Отдельное спасибо автору оригинального Podkop:  
+[itdoginfo/podkop](https://github.com/itdoginfo/podkop)

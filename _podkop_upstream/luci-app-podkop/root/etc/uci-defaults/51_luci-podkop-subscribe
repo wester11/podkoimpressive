@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -f /www/cgi-bin/podkop-subscribe ]; then
+    chmod 0755 /www/cgi-bin/podkop-subscribe 2>/dev/null || true
+fi
+
+exit 0
+
