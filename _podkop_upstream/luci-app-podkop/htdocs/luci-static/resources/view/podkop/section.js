@@ -383,56 +383,17 @@ function createSectionContent(section) {
   };
 
   o = section.option(
-    form.ListValue,
-    "user_domain_list_type",
-    _("User Domain List Type"),
-    _("Select the list type for adding custom domains"),
-  );
-  o.value("disabled", _("Disabled"));
-  o.value("dynamic", _("Dynamic List"));
-  o.value("text", _("Text List"));
-  o.default = "disabled";
-  o.rmempty = false;
-
-  o = section.option(
-    form.DynamicList,
-    "user_domains",
-    _("User Domains"),
-    _(
-      "Enter domain names without protocols, e.g. example.com or sub.example.com",
-    ),
-  );
-  o.placeholder = "Domains list";
-  o.depends("user_domain_list_type", "dynamic");
-  o.rmempty = false;
-  o.validate = function (section_id, value) {
-    // Optional
-    if (!value || value.length === 0) {
-      return true;
-    }
-
-    const validation = main.validateDomain(value, true);
-
-    if (validation.valid) {
-      return true;
-    }
-
-    return validation.message;
-  };
-
-  o = section.option(
     form.TextValue,
     "user_domains_text",
-    _("User Domains List"),
+    _("User Domains"),
     _(
       "Enter domain names separated by commas, spaces, or newlines. You can add comments using //",
     ),
   );
   o.placeholder =
     "example.com, sub.example.com\n// Social networks\ndomain.com test.com // personal domains";
-  o.depends("user_domain_list_type", "text");
   o.rows = 8;
-  o.rmempty = false;
+  o.rmempty = true;
   o.validate = function (section_id, value) {
     // Optional
     if (!value || value.length === 0) {
@@ -463,47 +424,9 @@ function createSectionContent(section) {
   };
 
   o = section.option(
-    form.ListValue,
-    "user_subnet_list_type",
-    _("User Subnet List Type"),
-    _("Select the list type for adding custom subnets"),
-  );
-  o.value("disabled", _("Disabled"));
-  o.value("dynamic", _("Dynamic List"));
-  o.value("text", _("Text List"));
-  o.default = "disabled";
-  o.rmempty = false;
-
-  o = section.option(
-    form.DynamicList,
-    "user_subnets",
-    _("User Subnets"),
-    _(
-      "Enter subnets in CIDR notation (e.g. 103.21.244.0/22) or single IP addresses",
-    ),
-  );
-  o.placeholder = "IP or subnet";
-  o.depends("user_subnet_list_type", "dynamic");
-  o.rmempty = false;
-  o.validate = function (section_id, value) {
-    // Optional
-    if (!value || value.length === 0) {
-      return true;
-    }
-
-    const validation = main.validateSubnet(value);
-
-    if (validation.valid) {
-      return true;
-    }
-
-    return validation.message;
-  };
-
-  o = section.option(
     form.TextValue,
     "user_subnets_text",
-    _("User Subnets List"),
+    _("User Subnets"),
     _(
       "Enter subnets in CIDR notation or single IP addresses, separated by commas, spaces, or newlines. " +
         "You can add comments using //",
@@ -511,9 +434,8 @@ function createSectionContent(section) {
   );
   o.placeholder =
     "103.21.244.0/22\n// Google DNS\n8.8.8.8\n1.1.1.1/32, 9.9.9.9 // Cloudflare and Quad9";
-  o.depends("user_subnet_list_type", "text");
   o.rows = 10;
-  o.rmempty = false;
+  o.rmempty = true;
   o.validate = function (section_id, value) {
     // Optional
     if (!value || value.length === 0) {

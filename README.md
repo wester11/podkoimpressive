@@ -1,39 +1,46 @@
-# RU Net Blacklist
+# ru-net-blacklist
 
-Я собираю и поддерживаю этот репозиторий как набор списков доменов/подсетей и свой форк Podkop для OpenWrt.
+![Release](https://img.shields.io/github/v/release/wester11/ru-net-blacklist?sort=semver)
+![Build](https://img.shields.io/github/actions/workflow/status/wester11/ru-net-blacklist/release-custom-podkop.yml?label=podkop%20release)
+![License](https://img.shields.io/github/license/wester11/ru-net-blacklist)
 
-## Что внутри
+Репозиторий со списками доменов/подсетей и кастомным `Podkop` для OpenWrt.
 
-- `services/` - отдельные сервисы (домен + подсети).
-- `lists/` - готовые групповые секции (несколько сервисов в одном списке).
-- `_podkop_upstream/` - исходники моего кастомного Podkop.
-- `selector/` - генератор ключа выбора списков.
-- `wiki/` - документация по проекту.
+## Возможности
 
-## Что добавлено в моем форке Podkop
+- Списки сервисов по категориям (`lists/`) и по отдельным платформам (`services/`).
+- Кастомный `Podkop` с доработанным LuCI.
+- Поддержка подписок (`Subscribe URL`) для режимов:
+  - `Connection URL`
+  - `Selector`
+  - `URLTest`
+- Автоматическая интеграция с Remnawave:
+  - авто-`x-hwid`
+  - авто-`x-device-os`
+  - авто-`x-ver-os`
+  - авто-`x-device-model`
+  - авто-`user-agent`
+  - отображение `x-provider-id` из ответа (если сервер его возвращает)
+- В `Selector` и `URLTest` конфиги из подписки автоматически заменяют старый набор.
 
-- Предустановленные community-секции из этого репозитория:
-  - `ai_all` - AI инструменты
-  - `gaming` - Игры
-  - `social_networks` - Социальные сети
-  - `messengers_calls` - Мессенджеры и звонки
-  - `video_audio_streaming` - Видео и стриминг
-  - `news_media` - Новости и медиа
-  - `developer_platforms` - Платформы для разработчиков
-  - `cloud_storage` - Облачные хранилища
-- Интеграция подписок (Subscribe URL) в интерфейсе Podkop:
-  - можно подгружать конфиги по подписке;
-  - работает для режимов `Connection URL`, `Selector`, `URLTest`;
-  - можно выбирать конфиги из подписки без ручного копирования каждой ссылки.
-- Расширенная совместимость с Remnawave:
-  - передача `x-hwid`, `x-device-os`, `x-ver-os`, `x-device-model`, `user-agent`;
-  - все headers генерируются автоматически на роутере (без ручного ввода в UI);
-  - в режиме `Selector` список серверов из подписки автоматически заменяет старый.
+## LuCI (упрощено)
 
-## Установка одной командой
+В интерфейсе убраны лишние переключатели типов для пользовательских списков.  
+Пользователь вводит данные напрямую:
+
+- `User Domains` — текстом (через запятые/пробелы/переносы, с комментариями `//`)
+- `User Subnets` — текстом (CIDR/IP, также с комментариями)
+
+## Быстрая установка
 
 ```sh
 sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/install.sh)
+```
+
+Установка конкретного релиза:
+
+```sh
+sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/install.sh) --release podkop-v0.7.15-ru6
 ```
 
 Прямой запуск установщика:
@@ -42,24 +49,33 @@ sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/
 sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/podkop-fork/install.sh)
 ```
 
-С ключом выбора списков:
+С ключом выборки списков:
 
 ```sh
 sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/podkop-fork/install.sh) --key "PK1_ВАШ_КЛЮЧ"
 ```
 
-## Как собирается релиз Podkop
+## Структура репозитория
 
-Релиз запускается тегом формата `podkop-v*`.  
-Workflow: `.github/workflows/release-custom-podkop.yml`.
+- `lists/` — агрегированные категории.
+- `services/` — отдельные сервисы (домен + подсети).
+- `_podkop_upstream/` — исходники кастомного Podkop.
+- `podkop-fork/` — установщик и логика one-command установки.
+- `selector/` — генератор ключа для выборки списков.
+- `wiki/` — документация.
 
-Сборка публикует пакеты в GitHub Releases:
+## Релизы
 
-- `podkop`
-- `luci-app-podkop`
-- `luci-i18n-podkop-ru` (если есть в сборке)
+Релиз Podkop публикуется через GitHub Actions:
 
-## Благодарность
+- workflow: `.github/workflows/release-custom-podkop.yml`
+- теги: `podkop-v*`
+- артефакты:
+  - `podkop`
+  - `luci-app-podkop`
+  - `luci-i18n-podkop-ru`
 
-Отдельное спасибо автору оригинального Podkop:  
+## Благодарности
+
+Спасибо автору оригинального Podkop:  
 [itdoginfo/podkop](https://github.com/itdoginfo/podkop)
