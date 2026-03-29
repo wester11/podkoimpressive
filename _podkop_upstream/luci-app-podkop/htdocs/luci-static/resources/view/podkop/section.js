@@ -2,9 +2,65 @@
 "require form";
 "require baseclass";
 "require ui";
+"require uci";
 "require tools.widgets as widgets";
 "require view.podkop.main as main";
 "require view.podkop.subscribe as subscribeExt";
+
+function toArray(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  if (typeof value === "string" && value.length > 0) {
+    return value.split(/\r?\n/).filter(function (item) {
+      return item && item.trim().length > 0;
+    });
+  }
+  return [];
+}
+
+function safeDecode(text) {
+  try {
+    return decodeURIComponent(text);
+  } catch (e) {
+    return text;
+  }
+}
+
+function extractProxyName(link, index) {
+  if (!link || typeof link !== "string") {
+    return _("Configuration") + " #" + index;
+  }
+
+  const trimmed = link.trim();
+  const hashPos = trimmed.indexOf("#");
+  if (hashPos >= 0 && hashPos < trimmed.length - 1) {
+    const name = safeDecode(trimmed.substring(hashPos + 1)).trim();
+    if (name.length > 0) {
+      return name;
+    }
+  }
+
+  const hostMatch = trimmed.match(/^[a-z0-9+.-]+:\/\/(?:[^@\/]+@)?([^:\/?]+)(?::(\d+))?/i);
+  if (hostMatch && hostMatch[1]) {
+    return hostMatch[2] ? hostMatch[1] + ":" + hostMatch[2] : hostMatch[1];
+  }
+
+  return _("Configuration") + " #" + index;
+}
+
+function formatSafeProxyNames(rawValue) {
+  const links = toArray(rawValue);
+  if (!links.length) {
+    return _("No configurations loaded yet");
+  }
+
+  return links
+    .map(function (link, idx) {
+      return (idx + 1) + ". " + extractProxyName(link, idx + 1);
+    })
+    .join("\n");
+}
 
 function createSectionContent(section) {
   let o = section.option(
@@ -84,49 +140,25 @@ function createSectionContent(section) {
   };
 
   o = section.option(
-    form.DynamicList,
-    "selector_proxy_links",
-    _("Selector Proxy Links"),
-    _("vless://, ss://, trojan://, socks4/5://, hy2/hysteria2:// links")
+    form.DummyValue,
+    "selector_proxy_links_safe_view",
+    _("Selector Configurations"),
+    _("Only configuration names are shown. Full links are hidden for security.")
   );
   o.depends("proxy_config_type", "selector");
-  o.rmempty = false;
-  o.validate = function (section_id, value) {
-    // Optional
-    if (!value || value.length === 0) {
-      return true;
-    }
-
-    const validation = main.validateProxyUrl(value);
-
-    if (validation.valid) {
-      return true;
-    }
-
-    return validation.message;
+  o.cfgvalue = function (section_id) {
+    return formatSafeProxyNames(uci.get("podkop", section_id, "selector_proxy_links"));
   };
 
   o = section.option(
-    form.DynamicList,
-    "urltest_proxy_links",
-    _("URLTest Proxy Links"),
-    _("vless://, ss://, trojan://, socks4/5://, hy2/hysteria2:// links")
+    form.DummyValue,
+    "urltest_proxy_links_safe_view",
+    _("URLTest Configurations"),
+    _("Only configuration names are shown. Full links are hidden for security.")
   );
   o.depends("proxy_config_type", "urltest");
-  o.rmempty = false;
-  o.validate = function (section_id, value) {
-    // Optional
-    if (!value || value.length === 0) {
-      return true;
-    }
-
-    const validation = main.validateProxyUrl(value);
-
-    if (validation.valid) {
-      return true;
-    }
-
-    return validation.message;
+  o.cfgvalue = function (section_id) {
+    return formatSafeProxyNames(uci.get("podkop", section_id, "urltest_proxy_links"));
   };
 
   o = section.option(
