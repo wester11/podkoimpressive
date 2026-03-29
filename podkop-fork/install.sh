@@ -415,23 +415,24 @@ apply_custom_lists() {
     msg "List setup step completed."
 }
 
-set_selector_default_mode() {
+set_urltest_default_mode() {
     if ! command -v uci >/dev/null 2>&1; then
-        warn "uci not found, skip selector default mode setup."
+        warn "uci not found, skip URLTest default mode setup."
         return
     fi
 
     if ! uci -q show podkop.main >/dev/null 2>&1; then
-        warn "podkop.main section not found, skip selector default mode setup."
+        warn "podkop.main section not found, skip URLTest default mode setup."
         return
     fi
 
     uci -q set podkop.main.connection_type='proxy'
-    uci -q set podkop.main.proxy_config_type='selector'
+    uci -q set podkop.main.proxy_config_type='urltest'
     uci -q delete podkop.main.proxy_string || true
+    uci -q delete podkop.main.selector_proxy_links || true
     uci -q delete podkop.main.urltest_proxy_links || true
     uci commit podkop
-    msg "Default main mode set: Configuration Type = Selector"
+    msg "Default main mode set: Configuration Type = URLTest"
 }
 
 setup_mobile_import() {
@@ -462,9 +463,11 @@ setup_mobile_import() {
     lan_ip="$(uci -q get network.lan.ipaddr 2>/dev/null || true)"
     [ -z "$lan_ip" ] && lan_ip="192.168.1.1"
 
-    msg "Mobile import key: $import_key"
+    masked_key="$(echo "$import_key" | sed -E 's/^(.{4}).*(.{4})$/\1********\2/')"
+    msg "Mobile import key (masked): $masked_key"
+    msg "To get full key locally on this router: uci get podkop.settings.mobile_import_key"
     msg "Button URL template:"
-    msg "http://${lan_ip}/cgi-bin/podkop-import-subscription?key=${import_key}&mode=selector&url=<URL_ENCODED_SUBSCRIPTION>"
+    msg "http://${lan_ip}/cgi-bin/podkop-import-subscription?key=<YOUR_ROUTER_KEY>&mode=urltest&url=<URL_ENCODED_SUBSCRIPTION>"
 }
 
 cleanup() {
@@ -511,7 +514,7 @@ main() {
     refresh_luci_cache
     reset_old_config_if_needed
     apply_custom_lists
-    set_selector_default_mode
+    set_urltest_default_mode
     setup_mobile_import
     cleanup
     print_finish

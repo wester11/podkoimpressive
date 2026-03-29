@@ -16,6 +16,14 @@ sh <(wget -O - https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/
 
 После установки обновите страницу LuCI с очисткой кэша браузера (Ctrl+F5).
 
+По умолчанию выставляется `Configuration Type = URLTest`.
+Ключ мобильного импорта выводится в маскированном виде.
+Полный ключ можно посмотреть на роутере:
+
+```sh
+uci get podkop.settings.mobile_import_key
+```
+
 ## Что включено
 
 - Стандартные community-списки Podkop
