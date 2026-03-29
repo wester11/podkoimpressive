@@ -12,16 +12,16 @@ set -eu
 
 # ---- Ready-to-use values ----
 # Podkop packages source (this repository releases)
-PODKOP_FORK_REPO="wester11/ru-net-blacklist"
+PODKOP_FORK_REPO="wester11/podkoimpressive"
 # Your lists repository:
-LISTS_BASE_URL="https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/lists"
-SERVICES_BASE_URL="https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/services"
+LISTS_BASE_URL="https://raw.githubusercontent.com/wester11/podkoimpressive/main/lists"
+SERVICES_BASE_URL="https://raw.githubusercontent.com/wester11/podkoimpressive/main/services"
 # Podkop custom config source (from custom podkop fork sources in this repository):
-PODKOP_CONFIG_URL="https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/_podkop_upstream/podkop/files/etc/config/podkop"
-PODKOP_SECTION_JS_URL="https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/_podkop_upstream/luci-app-podkop/htdocs/luci-static/resources/view/podkop/section.js"
-PODKOP_SUBSCRIBE_JS_URL="https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/_podkop_upstream/luci-app-podkop/htdocs/luci-static/resources/view/podkop/subscribe.js"
-PODKOP_SUBSCRIBE_CGI_URL="https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/_podkop_upstream/luci-app-podkop/root/www/cgi-bin/podkop-subscribe"
-PODKOP_IMPORT_CGI_URL="https://raw.githubusercontent.com/wester11/ru-net-blacklist/main/_podkop_upstream/luci-app-podkop/root/www/cgi-bin/podkop-import-subscription"
+PODKOP_CONFIG_URL="https://raw.githubusercontent.com/wester11/podkoimpressive/main/_podkop_upstream/podkop/files/etc/config/podkop"
+PODKOP_SECTION_JS_URL="https://raw.githubusercontent.com/wester11/podkoimpressive/main/_podkop_upstream/luci-app-podkop/htdocs/luci-static/resources/view/podkop/section.js"
+PODKOP_SUBSCRIBE_JS_URL="https://raw.githubusercontent.com/wester11/podkoimpressive/main/_podkop_upstream/luci-app-podkop/htdocs/luci-static/resources/view/podkop/subscribe.js"
+PODKOP_SUBSCRIBE_CGI_URL="https://raw.githubusercontent.com/wester11/podkoimpressive/main/_podkop_upstream/luci-app-podkop/root/www/cgi-bin/podkop-subscribe"
+PODKOP_IMPORT_CGI_URL="https://raw.githubusercontent.com/wester11/podkoimpressive/main/_podkop_upstream/luci-app-podkop/root/www/cgi-bin/podkop-import-subscription"
 
 PODKOP_RELEASE_TAG="${PODKOP_RELEASE_TAG:-}"
 DOWNLOAD_DIR="/tmp/podkop-fork"
