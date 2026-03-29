@@ -1,0 +1,15 @@
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.po text eol=lf
+*.srs text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary

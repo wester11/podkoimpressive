@@ -1,0 +1,23 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Local build/runtime artifacts
+*.log
+*.tmp
+*.bak
+*.orig
+
+# OpenWrt/LuCI runtime leftovers
+/tmp/
+
+# Local test exports / screenshots
+*.png
+*.jpg
+*.jpeg
+*.webp
