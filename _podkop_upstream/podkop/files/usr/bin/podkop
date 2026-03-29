@@ -689,13 +689,19 @@ configure_outbound_handler() {
             ;;
         selector)
             log "Detected proxy configuration type: selector" "debug"
-            local selector_proxy_links udp_over_tcp i outbound_tags outbound_tag default_outbound
+            local selector_proxy_links proxy_string_fallback udp_over_tcp i outbound_tags outbound_tag default_outbound
             config_get selector_proxy_links "$section" "selector_proxy_links"
             config_get udp_over_tcp "$section" "enable_udp_over_tcp"
 
             if [ -z "$selector_proxy_links" ]; then
-                log "URLTest proxy links is not set. Aborted." "fatal"
-                exit 1
+                config_get proxy_string_fallback "$section" "proxy_string"
+                if [ -n "$proxy_string_fallback" ]; then
+                    selector_proxy_links="$proxy_string_fallback"
+                    log "Selector links are empty, fallback to proxy_string for '$section'" "warn"
+                else
+                    log "Selector proxy links are not set. Aborted." "fatal"
+                    exit 1
+                fi
             fi
 
             reset_proxy_links_build_state "$config" "$section" "$udp_over_tcp"
@@ -726,7 +732,8 @@ configure_outbound_handler() {
             ;;
         urltest)
             log "Detected proxy configuration type: urltest" "debug"
-            local urltest_proxy_links udp_over_tcp i urltest_tag selector_tag outbound_tag outbound_tags \
+            local urltest_proxy_links selector_proxy_links_fallback proxy_string_fallback udp_over_tcp i \
+                urltest_tag selector_tag outbound_tag outbound_tags \
                 urltest_outbounds selector_outbounds urltest_check_interval urltest_tolerance urltest_testing_url
             config_get urltest_proxy_links "$section" "urltest_proxy_links"
             config_get udp_over_tcp "$section" "enable_udp_over_tcp"
@@ -735,8 +742,19 @@ configure_outbound_handler() {
             config_get urltest_testing_url "$section" "urltest_testing_url" "https://www.gstatic.com/generate_204"
 
             if [ -z "$urltest_proxy_links" ]; then
-                log "URLTest proxy links is not set. Aborted." "fatal"
-                exit 1
+                config_get selector_proxy_links_fallback "$section" "selector_proxy_links"
+                config_get proxy_string_fallback "$section" "proxy_string"
+
+                if [ -n "$selector_proxy_links_fallback" ]; then
+                    urltest_proxy_links="$selector_proxy_links_fallback"
+                    log "URLTest links are empty, fallback to selector links for '$section'" "warn"
+                elif [ -n "$proxy_string_fallback" ]; then
+                    urltest_proxy_links="$proxy_string_fallback"
+                    log "URLTest links are empty, fallback to proxy_string for '$section'" "warn"
+                else
+                    log "URLTest proxy links are not set. Aborted." "fatal"
+                    exit 1
+                fi
             fi
 
             reset_proxy_links_build_state "$config" "$section" "$udp_over_tcp"

@@ -416,6 +416,8 @@ apply_custom_lists() {
 }
 
 set_urltest_default_mode() {
+    local existing_urltest existing_selector existing_proxy has_urltest
+
     if ! command -v uci >/dev/null 2>&1; then
         warn "uci not found, skip URLTest default mode setup."
         return
@@ -426,13 +428,43 @@ set_urltest_default_mode() {
         return
     fi
 
+    existing_urltest="$(uci -q get podkop.main.urltest_proxy_links 2>/dev/null || true)"
+    existing_selector="$(uci -q get podkop.main.selector_proxy_links 2>/dev/null || true)"
+    existing_proxy="$(uci -q get podkop.main.proxy_string 2>/dev/null || true)"
+
+    if [ -z "$existing_urltest" ]; then
+        if [ -n "$existing_selector" ]; then
+            while IFS= read -r link; do
+                [ -n "$link" ] || continue
+                uci -q add_list podkop.main.urltest_proxy_links="$link"
+            done <<EOF
+$existing_selector
+EOF
+            msg "Migrated selector links to URLTest list"
+        elif [ -n "$existing_proxy" ]; then
+            uci -q add_list podkop.main.urltest_proxy_links="$existing_proxy"
+            msg "Migrated proxy_string to URLTest list"
+        fi
+    fi
+
+    has_urltest="$(uci -q get podkop.main.urltest_proxy_links 2>/dev/null || true)"
     uci -q set podkop.main.connection_type='proxy'
-    uci -q set podkop.main.proxy_config_type='urltest'
-    uci -q delete podkop.main.proxy_string || true
-    uci -q delete podkop.main.selector_proxy_links || true
+    if [ -n "$has_urltest" ]; then
+        uci -q set podkop.main.proxy_config_type='urltest'
+        msg "Default main mode set: Configuration Type = URLTest"
+    else
+        warn "No proxy links found, keep current proxy_config_type to avoid startup failure."
+    fi
     uci -q delete podkop.main.urltest_proxy_links || true
+    if [ -n "$has_urltest" ]; then
+        while IFS= read -r link; do
+            [ -n "$link" ] || continue
+            uci -q add_list podkop.main.urltest_proxy_links="$link"
+        done <<EOF
+$has_urltest
+EOF
+    fi
     uci commit podkop
-    msg "Default main mode set: Configuration Type = URLTest"
 }
 
 setup_mobile_import() {
